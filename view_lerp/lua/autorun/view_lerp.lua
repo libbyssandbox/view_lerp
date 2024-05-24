@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 require("libbys_sdk")
+libbys_sdk.util.require_binary("worldclicker")
 
 local LERP_PERCENTAGE = 0.75
 
@@ -27,6 +28,10 @@ libbys_sdk.util.unique_hook("StartCommand", function(ply, cmd)
 	end
 
 	local new_eye = lerp_angle(ply.m_angLastEye, ply.m_angDesiredEye)
+
+	if cmd.GetWorldClicker and cmd:GetWorldClicker() then
+		cmd:SetWorldClickerAngle(new_eye:Forward())
+	end
 
 	cmd:SetViewAngles(new_eye)
 
