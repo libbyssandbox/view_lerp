@@ -3,6 +3,8 @@ AddCSLuaFile()
 require("libbys_sdk")
 libbys_sdk.util.require_binary("worldclicker")
 
+local HAS_WORLDCLICKER = isfunction(libbys_sdk.metatables.get("CUserCmd").GetWorldClicker)
+
 local LERP_PERCENTAGE = 0.75
 
 local function lerp_angle(old, new)
@@ -18,22 +20,19 @@ local function lerp_angle(old, new)
 end
 
 libbys_sdk.util.unique_hook("StartCommand", function(ply, cmd)
-	if not isangle(ply.m_angDesiredEye) or (cmd:GetMouseX() ~= 0 or cmd:GetMouseY() ~= 0) then
-		ply.m_angDesiredEye = cmd:GetViewAngles()
-	end
+	ply.m_angDesiredEye = cmd:GetViewAngles()
+	ply.m_angLastEye = ply.m_angLastEye or ply.m_angDesiredEye
 
-	if not isangle(ply.m_angLastEye) then
-		ply.m_angLastEye = ply.m_angDesiredEye
-		return
+	if HAS_WORLDCLICKER and cmd:GetWorldClicker() then
+		ply.m_vecDesiredWorldClicker = cmd:GetWorldClickerAngle()
+		ply.m_vecLastWorldClicker = ply.m_vecLastWorldClicker or ply.m_vecDesiredWorldClicker
+
+		local new_worldclicker = lerp_angle(ply.m_vecDesiredWorldClicker:Angle(), ply.m_vecLastWorldClicker:Angle()):Forward()
+			cmd:SetWorldClickerAngle(new_worldclicker)
+		ply.m_vecLastWorldClicker = new_worldclicker
 	end
 
 	local new_eye = lerp_angle(ply.m_angLastEye, ply.m_angDesiredEye)
-
-	if cmd.GetWorldClicker and cmd:GetWorldClicker() then
-		cmd:SetWorldClickerAngle(new_eye:Forward())
-	end
-
-	cmd:SetViewAngles(new_eye)
-
+		cmd:SetViewAngles(new_eye)
 	ply.m_angLastEye = new_eye
 end)
