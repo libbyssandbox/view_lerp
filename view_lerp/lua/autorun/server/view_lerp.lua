@@ -20,6 +20,8 @@ local function lerp_angle(old, new)
 end
 
 libbys_sdk.util.unique_hook("StartCommand", function(ply, cmd)
+	if ply:IsBot() then return end
+
 	ply.m_angDesiredEye = cmd:GetViewAngles()
 	ply.m_angLastEye = ply.m_angLastEye or ply.m_angDesiredEye
 
