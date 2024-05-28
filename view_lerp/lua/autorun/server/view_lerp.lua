@@ -5,7 +5,7 @@ libbys_sdk.util.require_binary("worldclicker")
 
 local HAS_WORLDCLICKER = isfunction(libbys_sdk.metatables.get("CUserCmd").GetWorldClicker)
 
-local LERP_PERCENTAGE = 0.5
+local LERP_PERCENTAGE = 0.75
 
 local function lerp_angle(old, new)
 	local pitch_difference = math.AngleDifference(old.pitch, new.pitch) * LERP_PERCENTAGE
