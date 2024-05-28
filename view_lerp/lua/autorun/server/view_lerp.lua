@@ -22,19 +22,25 @@ end
 libbys_sdk.util.unique_hook("StartCommand", function(ply, cmd)
 	if ply:IsBot() then return end
 
+	-- Eye angles
 	ply.m_angDesiredEye = cmd:GetViewAngles()
 	ply.m_angLastEye = ply.m_angLastEye or ply.m_angDesiredEye
-
-	if HAS_WORLDCLICKER and cmd:GetWorldClicker() then
-		ply.m_vecDesiredWorldClicker = cmd:GetWorldClickerAngle()
-		ply.m_vecLastWorldClicker = ply.m_vecLastWorldClicker or ply.m_vecDesiredWorldClicker
-
-		local new_worldclicker = lerp_angle(ply.m_vecDesiredWorldClicker:Angle(), ply.m_vecLastWorldClicker:Angle()):Forward()
-			cmd:SetWorldClickerAngle(new_worldclicker)
-		ply.m_vecLastWorldClicker = new_worldclicker
-	end
 
 	local new_eye = lerp_angle(ply.m_angLastEye, ply.m_angDesiredEye)
 		cmd:SetViewAngles(new_eye)
 	ply.m_angLastEye = new_eye
+
+	-- Worldclicker angles
+	if HAS_WORLDCLICKER then
+		if cmd:GetWorldClicker() then
+			ply.m_vecDesiredWorldClicker = cmd:GetWorldClickerAngle()
+			ply.m_vecLastWorldClicker = ply.m_vecLastWorldClicker or ply.m_vecDesiredWorldClicker
+
+			local new_worldclicker = lerp_angle(ply.m_vecDesiredWorldClicker:Angle(), ply.m_vecLastWorldClicker:Angle()):Forward()
+				cmd:SetWorldClickerAngle(new_worldclicker)
+			ply.m_vecLastWorldClicker = new_worldclicker
+		else
+			cmd:SetWorldClickerAngle(new_eye:Forward())
+		end
+	end
 end)
