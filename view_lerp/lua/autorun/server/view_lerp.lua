@@ -1,5 +1,5 @@
 require("libbys")
-libbys_sdk.util.require_binary("worldclicker")
+libbys.util.require_binary("worldclicker")
 
 local LERP_PERCENTAGE = 0.75 -- Percentage of view angles to allow per tick
 local MAX_PER_TICK = 20 -- Maximum amount of angle units allowed per tick
@@ -22,7 +22,7 @@ local function lerp_angle(old, new)
 	return Angle(new_pitch, new_yaw, new_roll)
 end
 
-libbys_sdk.util.unique_hook("StartCommand", function(ply, cmd)
+libbys.hooks.make_unique("StartCommand", function(ply, cmd)
 	if ply:IsBot() then return end
 
 	-- Eye angles
